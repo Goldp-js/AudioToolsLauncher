@@ -44,7 +44,7 @@ async function checkAndUpdateLauncher() {
     const { data } = await axios.get('https://api.github.com/repos/Goldp-js/AudioToolsLauncher/releases/latest');
     const latestVersion = data.tag_name.replace('v', '');
 
-    const currentVersion = '1.0.0';  
+    const currentVersion = '1.0.1';  
 
     if (latestVersion !== currentVersion) {
       console.log('¡Hay una versión más reciente disponible en GitHub!');
