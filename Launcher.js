@@ -41,11 +41,10 @@ const colors = {
 async function checkAndUpdateLauncher() {
   try {
     const scriptPath = path.basename(__filename);
-    const { data } = await axios.get('https://api.github.com/repos/tu-usuario/tu-proyecto/releases/latest');
+    const { data } = await axios.get('https://api.github.com/repos/Goldp-js/AudioToolsLauncher/releases/latest');
     const latestVersion = data.tag_name.replace('v', '');
 
-    // Obtener la versión actual del script
-    const currentVersion = '1.0.0';  // Ajusta esto según la versión actual de tu script
+    const currentVersion = '1.0.0';  
 
     if (latestVersion !== currentVersion) {
       console.log('¡Hay una versión más reciente disponible en GitHub!');
@@ -61,7 +60,6 @@ async function checkAndUpdateLauncher() {
     }
   } catch (error) {
     console.error('Error al verificar la versión o actualizar el launcher:', error.message);
-    // Continuar con la ejecución del launcher incluso si hay un error al verificar la versión
   }
 }
 
