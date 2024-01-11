@@ -3,12 +3,13 @@ const fs = require('fs');
 const readline = require('readline');
 const { promisify } = require('util');
 const path = require('path');
-
+const axios = require("axios")
 const execAsync = promisify(exec);
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
+
 
 const colors = {
   reset: '\x1b[0m',
@@ -37,6 +38,32 @@ const colors = {
   bgCyan: '\x1b[46m',
   bgWhite: '\x1b[47m',
 };
+async function checkAndUpdateLauncher() {
+  try {
+    const scriptPath = path.basename(__filename);
+    const { data } = await axios.get('https://api.github.com/repos/tu-usuario/tu-proyecto/releases/latest');
+    const latestVersion = data.tag_name.replace('v', '');
+
+    // Obtener la versión actual del script
+    const currentVersion = '1.0.0';  // Ajusta esto según la versión actual de tu script
+
+    if (latestVersion !== currentVersion) {
+      console.log('¡Hay una versión más reciente disponible en GitHub!');
+      console.log(`Versión actual: ${currentVersion}, Versión más reciente: ${latestVersion}`);
+      console.log('Actualizando el launcher...');
+
+      const updatedScript = await axios.get(data.assets[0].browser_download_url);
+      fs.writeFileSync(scriptPath, updatedScript.data);
+
+      console.log('Launcher actualizado exitosamente. Reinicia la aplicación.');
+    } else {
+      console.log('El launcher está en la última versión.');
+    }
+  } catch (error) {
+    console.error('Error al verificar la versión o actualizar el launcher:', error.message);
+    // Continuar con la ejecución del launcher incluso si hay un error al verificar la versión
+  }
+}
 
 async function runDiagnostics() {
   console.log(colors.fgCyan + colors.bright + '--- Diagnóstico del sistema ---' + colors.reset);
@@ -137,12 +164,13 @@ function exit() {
 
 
 function main() {
+ checkAndUpdateLauncher();
   console.log(colors.fgMagenta + colors.bright + 'Audio Tools' + colors.reset);
   console.log(colors.fgYellow + colors.bright + '--- Opciones disponibles ---' + colors.reset);
   console.log(colors.fgGreen + '1. Diagnóstico del sistema' + colors.reset);
-  console.log(colors.fgGreen + '3. Ejecutar script personalizado' + colors.reset);
-  console.log(colors.fgGreen + '4. Iniciar el bot' + colors.reset);
-  console.log(colors.fgGreen + '5. Salir' + colors.reset);
+  console.log(colors.fgGreen + '2. Ejecutar script personalizado' + colors.reset);
+  console.log(colors.fgGreen + '3. Iniciar el bot' + colors.reset);
+  console.log(colors.fgGreen + '4. Salir' + colors.reset);
   console.log(colors.reset + '---------------------------');
 
   rl.question(colors.fgYellow + 'Ingresa el número de la opción deseada: ' + colors.reset, (selectedOption) => {
@@ -158,3 +186,4 @@ function main() {
 }
 
 main();
+
