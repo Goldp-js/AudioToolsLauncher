@@ -16,7 +16,7 @@ Ensure that Node.js is installed on your system and that the necessary npm packa
 
 ## Usage
 
-1. Run the script using the command: `node <script_name>.js`.
+1. Run the script using the command: `node Launcher.js`.
 2. Follow the on-screen menu prompts to perform the desired action.
 
 ## Diagnose System
